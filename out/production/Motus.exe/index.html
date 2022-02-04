@@ -14,28 +14,156 @@
 
     <script>
 
-        $(document).ready(function() {
-            $.ajax({
-                type: "GET",
-                url : "http://frenchwordsapi.herokuapp.com/api/Word/GetRandomWord?nbrWordsNeeded=50",
-                success : function(data, textStatus, xhr) {
-                    if(xhr.status === 200){
-                        console.log(data)
+        motus = {
+            store: null,
+            helper: null,
+            display: null,
+            handle: null
+        }
+
+
+        /* -------------------- Init Store -------------------- */
+
+        motus.store = {
+            allWords: ['ABEILLE', 'ABRICOT', 'ACROBATE', 'ACTEUR', 'AEROPORT', 'AGNEAU', 'AIGLE', 'AIGUILLE', 'ALBERT', 'ALICE', 'ALLUMETTE', 'AMAZONE', 'AMBULANCE', 'AMPOULE', 'ANANAS', 'ANIMAL', 'ANUBIS', 'APHRODITE', 'APICULTEUR', 'APOLLON', 'APPAREIL', 'APPAREIL', 'AQUARIUM', 'ARAIGNEE', 'ARBRE', 'ARCHITECTE', 'ARETE', 'ARGENT', 'ARROSOIR', 'ARTEMIS', 'ASCENSEUR', 'ASPERGE', 'ASPIRATEUR', 'ASPIRINE', 'ASSIETTE', 'ASTERIX', 'ASTRONAUTE', 'ASTRONOMIE', 'ATHENA', 'ATTERRIR', 'AUBERGINE', 'AUTOMNE', 'AUTRUCHE', 'AVION', 'BAGUE', 'BAGUETTE', 'BAILLER', 'BALAI', 'BALANÇOIRE', 'BALEINE', 'BALEINE', 'BALLE', 'BALLON', 'BANANE', 'BANDE', 'BARBE', 'BARQUE', 'BARRETTE', 'BASKET', 'BATEAU', 'BATON', 'BAVOIR', 'BEQUILLE', 'BERGER', 'BERGER', 'BERMUDA', 'BEURRE', 'BIBERON', 'BIFTECK', 'BIJOU', 'BIJOUTIER', 'BILLE', 'BILLET', 'BIOLOGIE', 'BISCUIT', 'BISON', 'BOISSON', 'BONBON', 'BONNET', 'BOOMERANG', 'BOTTE', 'BOUCHE', 'BOUCHER', 'BOUCHERIE', 'BOUCHON', 'BOUEE', 'BOULANGER', 'BOUTEILLE', 'BOUTON', 'BRACELET', 'BRETELLE', 'BROCOLI', 'BROSSE', 'BROUETTE', 'BUREAU', 'CABANE', 'CADEAU', 'CADENAS', 'CAFETIERE', 'CAGOULE', 'CAILLOU', 'CALCULETTE', 'CALENDRIER', 'CAMELEON', 'CAMERA', 'CAMION', 'CAMPING', 'CANAPE', 'CANARD', 'CANICHE', 'CANNE', 'CARAVANE', 'CARNAVAL', 'CAROTTE', 'CARTABLE', 'CASQUE', 'CASQUETTE', 'CASSEROLE', 'CASTOR', 'CEINTURE', 'CENDRILLON', 'CENTAURE', 'CERBERE', 'CERCEAU', 'CEREALE', 'CERISE', 'CERVEAU', 'CHAISE', 'CHAMEAU', 'CHAMPIGNON', 'CHANDELEUR', 'CHANTER', 'CHANTEUR', 'CHAPEAU', 'CHARIOT', 'CHASSEUR', 'CHATAIGNE', 'CHATEAU', 'CHATON', 'CHAUSSETTE', 'CHAUSSON', 'CHAUSSURE', 'CHAUVE', 'CHEMISE', 'CHENILLE', 'CHERCHEUR', 'CHEVAL', 'CHEVAL', 'CHEVALIERS', 'CHEVEU', 'CHEVILLE', 'CHEVRE', 'CHIEN', 'CHIFFON', 'CHIOT', 'CHIPS', 'CHIRURGIEN', 'CHOCOLAT', 'CHOUETTE', 'CHRISTOPHE', 'CHUCHOTER', 'CIGOGNE', 'CISEAUX', 'CITRON', 'CITROUILLE', 'CLEMENTINE', 'CLEOPATRE', 'CLIGNOTANT', 'CLOWN', 'COCCINELLE', 'COCHON', 'COCOTTE', 'COFFRE', 'COIFFEUR', 'COLLANT', 'COLLE', 'COLLIER', 'COLORIER', 'CONCOMBRE', 'CONDUIRE', 'CONFITURE', 'CONSOLE', 'COQUELICOT', 'COQUILLAGE', 'CORBEAU', 'CORBEILLE', 'CORDE', 'COUDE', 'COUDRE', 'COUETTE', 'COURONNE', 'COUSSIN', 'COUTEAU', 'COUVER', 'COUVERCLE', 'COUVERTURE', 'CRABE', 'CRACHER', 'CRAIE', 'CRAPAUD', 'CRAVATE', 'CRAYON', 'CRECHE', 'CREME', 'CREPE', 'CREUSER', 'CREVETTE', 'CROCHET', 'CROCODILE', 'CROISSANT', 'CRONOS', 'CROÛTE', 'CUILLERE', 'CUISINIER', 'CUISSE', 'CULOTTE', 'CYCLISME', 'CYCLOPE', 'CYGNE', 'DANSER', 'DAUPHIN', 'DECHIRER', 'DENTIFRICE', 'DENTISTE', 'DESSERT', 'DIAMANT', 'DIANE', 'DINDON', 'DÎNETTE', 'DINOSAURE', 'DIONYSOS', 'DOIGT', 'DOMINO', 'DOMPTEUR', 'DONALD', 'DORMIR', 'DRAGON', 'DROMADAIRE', 'ECHARPE', 'ECHASSE', 'ECHECS', 'ECHELLE', 'ECOLE', 'ECOLE', 'ECRAN', 'ECRIRE', 'ECUREUIL', 'EGYPTE', 'ELASTIQUE', 'ELEPHANT', 'EMPIRE', 'ENDIVE', 'ENTONNOIR', 'ENVELOPPE', 'EPAULE', 'EPINGLE', 'EPIPHANIE', 'EPONGE', 'ESCALIER', 'ESCARGOT', 'ESCRIME', 'ESPAGNE', 'ESSENCE', 'ETATS', 'ETOILE', 'ETOILE', 'ETOILE', 'EVEREST', 'FACTEUR', 'FANTOME', 'FARINE', 'FAUTEUIL', 'FAUTEUIL', 'FERME', 'FESSE', 'FEUTRE', 'FICELLE', 'FIEVRE', 'FILLE', 'FLAMANT', 'FLEUR', 'FLEURISTE', 'FLÛTE', 'FOOTBALL', 'FORGERON', 'FOSSILE', 'FOURCHETTE', 'FOURMI', 'FRAISE', 'FRAMBOISE', 'FRANCE', 'FREIN', 'FRISBEE', 'FRITES', 'FROMAGE', 'FRONT', 'FRUIT', 'FUSEE', 'FUSEE', 'GALERE', 'GALETTE', 'GANDHI', 'GARAGE', 'GARÇON', 'GARDIEN', 'GARGAMEL', 'GATEAU', 'GAULOIS', 'GEANT', 'GENOU', 'GEOLOGIE', 'GIRAFE', 'GLAÇON', 'GOBELET', 'GOMME', 'GORILLE', 'GRANDE', 'GRECE', 'GRENOUILLE', 'GRIFFE', 'GROSEILLE', 'GROTTE', 'GRUYERE', 'GUEPARD', 'GUEPE', 'GUIRLANDE', 'GYMNASE', 'HADES', 'HALLOWEEN', 'HAMSTER', 'HANDBALL', 'HARICOT', 'HEPHAÏSTOS', 'HERACLES', 'HERBE', 'HERISSON', 'HERMES', 'HIBOU', 'HIPPOCAMPE', 'HIRONDELLE', 'HIVER', 'HOCKEY', 'HOPITAL', 'HOQUET', 'HORLOGE', 'HORUS', 'HOTEL', 'HUILE', 'HUSKY', 'ICARE', 'IDEFIX', 'IMPRIMANTE', 'INFIRMIER', 'INSECTE', 'ITALIE', 'JAMBE', 'JAMBON', 'JANUS', 'JAPON', 'JEANNE', 'JOLLY', 'JONGLER', 'JONGLEUR', 'JOURNEE', 'JUMELLES', 'JUMENT', 'KANGOUROU', 'KARATE', 'KETCHUP', 'LACET', 'LANCER', 'LANGUE', 'LAPIN', 'LARME', 'LEOPARD', 'LEVRE', 'LEVRES', 'LEZARD', 'LIBELLULE', 'LIBRAIRE', 'LICORNE', 'LIEVRE', 'LIMACE', 'LIVRE', 'LOUCHE', 'LOUPE', 'LUCKY', 'LUNETTES', 'LUNETTES', 'LUTIN', 'MAÇON', 'MAGICIEN', 'MAILLOT', 'MAILLOT', 'MAISON', 'MANEGE', 'MANTE', 'MANTEAU', 'MARGUERITE', 'MARIE', 'MARIN', 'MARMOTTE', 'MARTEAU', 'MEDECIN', 'MEDECINE', 'MEDICAMENT', 'MEDUSE', 'MELON', 'MENTON', 'MERLIN', 'METAL', 'METEORITE', 'METRO', 'MEXIQUE', 'MICKEY', 'MICROSCOPE', 'MILLE', 'MILOU', 'MINNIE', 'MINOTAURE', 'MIROIR', 'MOINEAU', 'MONSTRE', 'MONTAGNE', 'MONTRE', 'MORSE', 'MOTEUR', 'MOUCHE', 'MOUCHOIR', 'MOUETTE', 'MOUFLE', 'MOULE', 'MOULIN', 'MOUSTACHE', 'MOUSTIQUE', 'MOUTARDE', 'MOUTON', 'MUSIQUE', 'NAGER', 'NAPPE', 'NASIQUE', 'NAVET', 'NOISETTE', 'NOMBRIL', 'NOUVEL', 'NOYAU', 'OBELIX', 'OIGNON', 'OISEAU', 'OLIVE', 'ONGLE', 'OPTICIEN', 'ORANGE', 'ORDINATEUR', 'ORDONNANCE', 'OREILLE', 'OREILLER', 'ORQUE', 'ORTEIL', 'OTARIE', 'OURSIN', 'OUVRE', 'OUVRIER', 'PAILLE', 'PALAIS', 'PANDA', 'PANSEMENT', 'PANTALON', 'PANTHERE', 'PAPIER', 'PAPILLON', 'PARAPLUIE', 'PARASOL', 'PARIS', 'PATES', 'PATISSERIE', 'PATTE', 'PECHE', 'PECHEUR', 'PEDALE', 'PEGASE', 'PEIGNE', 'PELICAN', 'PELLE', 'PELUCHE', 'PERCEUSE', 'PERLE', 'PERROQUET', 'PERSIL', 'PETANQUE', 'PETIT', 'PHARMACIE', 'PHENIX', 'PHOQUE', 'PIANO', 'PICSOU', 'PIEUVRE', 'PIGEON', 'PINCEAU', 'PINOCCHIO', 'PIQUER', 'PIQÛRE', 'PIZZA', 'PLANCHE', 'PLANCHE', 'PLASTIQUE', 'PLATRE', 'PLEURER', 'PLOMBIER', 'PLUME', 'POELE', 'POIGNET', 'POING', 'POIRE', 'POIREAU', 'POISON', 'POISSON', 'POLICE', 'POMME', 'POMME', 'POMPIER', 'PONEY', 'POPCORN', 'PORTE', 'POSEIDON', 'POUBELLE', 'POUCE', 'POULAIN', 'POULE', 'POULET', 'POUMON', 'POUPEE', 'POUSSETTE', 'POUSSIN', 'PRINCE', 'PRINCESSE', 'PRINTEMPS', 'PROMETHEE', 'PRUNE', 'PUISSANCE', 'PUREE', 'PUTOIS', 'PUZZLE', 'PYJAMA', 'PYRAMIDES', 'QUEUE', 'RACLETTE', 'RADIATEUR', 'RADIO', 'RADIS', 'RAISIN', 'RANTANPLAN', 'RAQUETTE', 'RASOIR', 'RATEAU', 'RATON', 'RECETTE', 'REINE', 'RENARD', 'REQUIN', 'RESTAURANT', 'REVEIL', 'REVER', 'RHINOCEROS', 'RIDEAU', 'ROBINET', 'ROBINSON', 'ROBOT', 'ROUGE', 'ROULEAU', 'SABLE', 'SAINT', 'SALADE', 'SALADE', 'SALADIER', 'SALIERE', 'SANGLIER', 'SAPIN', 'SARDINE', 'SATYRE', 'SAUMON', 'SAVON', 'SCIENCE', 'SCOOTER', 'SCORPION', 'SERPENT', 'SERPENT', 'SERRURE', 'SERVIETTE', 'SHAMPOOING', 'SHERLOCK', 'SHIVA', 'SINGE', 'SIRENE', 'SOLEIL', 'SONNETTE', 'SORCIERE', 'SOUCOUPE', 'SOUPE', 'SOURCIL', 'SOURIS', 'SPHINX', 'SQUELETTE', 'STATUE', 'STYLO', 'SUCRE', 'SUPERMAN', 'TABLE', 'TABLEAU', 'TABLETTE', 'TABLIER', 'TAILLE', 'TALON', 'TAMBOUR', 'TANDEM', 'TAPIS', 'TAPIS', 'TARTE', 'TARTINE', 'TASSE', 'TAUPE', 'TAUREAU', 'TELEPHONE', 'TELEPHONE', 'TELEVISION', 'TENNIS', 'TENTE', 'TETER', 'TIGRE', 'TIMBRE', 'TIROIR', 'TOBOGGAN', 'TOMATE', 'TORCHON', 'TORTUE', 'TOURNEVIS', 'TOUTATIS', 'TRACTEUR', 'TRAIN', 'TRAÎNEAU', 'TRAMPOLINE', 'TRESOR', 'TRICYCLE', 'TROMPETTE', 'TRONE', 'TROUSSE', 'TRUIE', 'TUYAU', 'ULYSSE', 'UNIVERS', 'URINE', 'USINE', 'VACHE', 'VALISE', 'VALKYRIE', 'VAMPIRE', 'VAUTOUR', 'VENISE', 'VENTRE', 'VERRE', 'VIANDE', 'VIKINGS', 'VISAGE', 'VOILE', 'VOITURE', 'VOLCAN', 'VOLET', 'XYLOPHONE', 'YAHOURT', 'ZEBRE', 'ZOMBIE'],
+            wordChosen: 'Petit tricheur 🤪',
+            target: [0,0]
+
+        }
+
+
+        /* -------------------- Init Store -------------------- */
+
+        motus.helper = {
+            getRandomInt: (max) => {
+                return Math.floor(Math.random() * max);
+            }
+        }
+
+
+        /* -------------------- Init Store -------------------- */
+
+        motus.display = {
+            initGrid: (wordChosen) => {
+
+                let grid = $("#grid");
+                grid.css("grid-template-columns", "repeat(${length}, 1fr)");
+                let elementToAdd = ``;
+                let length = wordChosen.length
+
+                for(let i = 0 ; i < 6 ; i++) {
+
+                    elementToAdd = `<div class="row">`;
+                    for(let j = 0 ; j < length ; j++) {
+                        elementToAdd += `<div id="i${i}j${j}" class="unknown case"> A </div>`
+
                     }
-                },
-                error : function(request, error) {
-                    console.error(error);
-                    console.debug(request);
+                    elementToAdd += `</div>`;
+                    grid.append(elementToAdd);
+
+                }
+                $(".case").each(function(index, item) {
+                    $("#"+item.id).css("height", $("#"+item.id).width())
+                })
+
+            }
+        }
+
+
+        /* -------------------- Init Store -------------------- */
+
+        motus.handle = {
+
+        }
+
+
+        /* -------------------- Initialize Screen -------------------- */
+
+        $(document).ready(function() {
+
+
+            let wordChosen = motus.store.allWords[motus.helper.getRandomInt(motus.store.allWords.length - 1)]
+
+            motus.display.initGrid(wordChosen);
+
+            console.log(wordChosen)
+
+            $(document).keypress(function(e) {
+
+                let code = (e.keyCode ? e.keyCode : e.which);
+
+                if(code >= 97 && code <= 122) {
+
+                    $("#0")
+
+                    console.log(String.fromCharCode(code))
                 }
             });
-
 
         })
 
     </script>
 
+    <style>
+
+        body {
+            background-color: white;
+        }
+
+        .title {
+            margin-top: 1%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 55px;
+        }
+
+        .case {
+            border: 1px solid grey;
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            margin: 3px;
+        }
+
+        .find {
+            background-color: #E60A0A;
+            color: white;
+        }
+
+        .nice {
+            background-color: #EED803;
+            border-radius: 25px;
+            color: white;
+        }
+
+        .unknown {
+            background-color: white;
+        }
+
+        .grid {
+            margin-top: 4%;
+            display: grid;
+            grid-gap: 5px;
+            text-align: center;
+            justify-content: center;
+        }
+
+    </style>
+
 </head>
 <body>
+
+    <h1 class="title"> Salut bg </h1>
+
+    <hr/>
+
+
+    <div id="grid" class="container-fluid grid col-sm-8 offset-2">
+
+    </div>
+
+
 
 </body>
 </html>
