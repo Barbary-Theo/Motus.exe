@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title> 🔴 Motus 🟡 </title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -31,7 +31,8 @@
             iTarget: 0,
             lettersValidity: [],
             wordsTried: [],
-            wordFindPercent: 0
+            wordFindPercent: 0,
+            nbEnter: 0
 
         }
 
@@ -200,7 +201,7 @@
                     $("#i"+motus.store.iTarget+"j"+motus.store.jTarget).addClass("caseSelected");
 
                     motus.handle.updateProgressBar(wordChosen);
-
+                    motus.store.nbEnter = 0;
                 }
 
             },
@@ -224,7 +225,6 @@
         /* -------------------- Initialize Screen -------------------- */
 
         $(document).ready(function() {
-
 
             let wordChosen = motus.store.allWords[motus.helper.getRandomInt(motus.store.allWords.length - 1)]
 
@@ -250,7 +250,9 @@
 
                 let code = (e.keyCode ? e.keyCode : e.which);
 
-                if(code === 13) {
+                if(code === 13 && motus.store.nbEnter === 0) {
+                    motus.store.nbEnter += 1;
+                    console.log(motus.store.nbEnter)
                     motus.handle.valideWord(wordChosen);
                 }
                 else if(code >= 65 && code <= 90) {
@@ -315,7 +317,7 @@
         }
 
         .unknown {
-            background-color: white;
+            background-color: #F9F9F9;
         }
 
         .grid {
@@ -359,6 +361,7 @@
             border-radius: 20px;
             border: 1px solid black;
             background-color: white;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
         }
 
     </style>
@@ -381,7 +384,7 @@
 
 
 
-    <div class="progress" style="width: 70%; margin: auto">
+    <div class="progress" style="width: 70%; margin: auto;">
         <div id="progressBar" class="progress-bar bg-danger" role="progressbar" style="width: 0;"  aria-valuemin="0" aria-valuemax="100">0%</div>
     </div>
 
@@ -414,22 +417,24 @@
          aria-labelledby="myModalLabel2" aria-hidden="true">
         <div class="modal-dialog modal-md" style="margin-top: 20%">
             <div class="modal-content">
-                <div class="modal-header" style="justify-content: center">
+                <div class="modal-header"  style="justify-content: center !important;">
 
-                    <h1> Dommage t'es bête 😕 </h1>
+                    <h1> Tant pis </h1>
 
                 </div>
                 <div class="modal-body">
 
-                    <div class="row" style="font-size: 26px">
+                    <div class="row" style="font-size: 26px; text-align: center;">
                         <div id="wordChosenWas" class="col-sm-10 offset-1">
                             text
                         </div>
-                        <div class="col-sm-6 offset-3">
-                            <button id="playAgain2" class="btn btn-primary">🟡 Un nouveau mot stp ‍🔴</button>
-                        </div>
                     </div>
 
+                </div>
+                <div class="modal-footer" style="justify-content: center !important;">
+                    <div>
+                        <button id="playAgain2" class="btn btn-primary">🟡 Un nouveau mot stp ‍🔴</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -455,7 +460,7 @@
 
                     <div class="row" style="font-size: 20px; text-align: center">
                         <ul>
-                            <li> Le truc c'est que j'ai pas trouvé un dictionnaire assez complet, du coup même si vous mettez n'importe quoi bah ça va corriger </li>
+                            <li> C'est dommage que j'ai pas trouvé un dictionnaire assez complet, du coup même si vous mettez n'importe quoi bah ça va corriger </li>
                             <li> Sinon bah tu connais les règles de Motus </li>
                         </ul>
                     </div>
